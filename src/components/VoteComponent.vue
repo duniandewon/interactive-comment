@@ -1,18 +1,30 @@
 <template>
   <div class="container">
-    <button>
+    <button @click="handleScore('inc')">
       <IconPlus />
     </button>
-    <span>12</span>
-    <button>
+    <span>{{ score }}</span>
+    <button @click="handleScore('dec')">
       <IconMinus />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import IconMinus from './icons/IconMinus.vue';
 import IconPlus from './icons/IconPlus.vue';
+
+const props = defineProps<{ score: number }>()
+
+const score = ref(props.score)
+
+const handleScore = (action: "inc" | "dec") => {
+  if (action === "inc") score.value += 1
+
+  if (action === "dec" && score.value > 0) score.value--
+}
 </script>
 
 <style scoped>
@@ -36,5 +48,4 @@ import IconPlus from './icons/IconPlus.vue';
     flex-direction: column;
   }
 }
-
 </style>
