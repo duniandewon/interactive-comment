@@ -18,7 +18,6 @@ import IconPlus from './icons/IconPlus.vue';
 <style scoped>
 .container {
   width: min(100%, 100px);
-  height: 100%;
 
   padding: 0.8rem 0.5rem;
 
