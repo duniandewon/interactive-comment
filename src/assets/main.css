@@ -2,7 +2,7 @@
 
 body {
   position: relative;
-  background-color: var(--primary-200);
+  background-color: var(--clr-primary-200);
   color: var(--clr-primary-700);
   font-family: Rubik;
 
