@@ -1,37 +1,35 @@
 <template>
   <div class="comment-card">
     <div class="comment-card__header">
-      <Avatar username="amyrobson" />
+      <Avatar :username="username" />
       <div class="comment-card__user">
-        <span>amyrobson</span>
-        <span class="comment-card__you">you</span>
+        <span>{{ username }}</span>
+        <span class="comment-card__you" v-if="isMine">you</span>
       </div>
       <div class="comment-card__time">
         2 days ago
       </div>
     </div>
     <p class="comment-card__content">
-      <span class="conmment-card__mention">@ramsesmiron</span> I couldn't agree more with this. Everything moves so fast
-      and it always seems like everyone knows the
-      newest library/framework. But the fundamentals are what stay constant.
+      <span class="conmment-card__mention" v-if="replyingTo">@{{ replyingTo }}</span> {{ content }}
     </p>
     <div class="comment-card__vote">
-      <VoteButton />
+      <VoteButton :score="score" />
     </div>
     <div class="comment-card__action">
-      <IconButton class="danger">
+      <IconButton class="danger" v-if="isMine">
         <template v-slot:icon>
           <IconDelete />
         </template>
         <span>Delete</span>
       </IconButton>
-      <IconButton>
+      <IconButton v-if="isMine">
         <template v-slot:icon>
           <IconEdit />
         </template>
         <span>Edity</span>
       </IconButton>
-      <IconButton>
+      <IconButton v-if="!isMine">
         <template v-slot:icon>
           <IconReply />
         </template>
@@ -48,6 +46,15 @@ import VoteButton from './VoteComponent.vue';
 import IconDelete from './icons/IconDelete.vue';
 import IconEdit from './icons/IconEdit.vue';
 import IconReply from './icons/IconReply.vue';
+
+defineProps<{
+  score: number
+  username: string
+  content: string
+  replyingTo?: string
+  createdAt: Date
+  isMine: boolean
+}>()
 </script>
 
 <style scoped>
