@@ -47,12 +47,13 @@ import IconDelete from './icons/IconDelete.vue';
 import IconEdit from './icons/IconEdit.vue';
 import IconReply from './icons/IconReply.vue';
 
+
 defineProps<{
   score: number
   username: string
   content: string
   replyingTo?: string
-  createdAt: Date
+  createdAt: string
   isMine: boolean
 }>()
 </script>
