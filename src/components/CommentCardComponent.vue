@@ -27,7 +27,7 @@
         <template v-slot:icon>
           <IconEdit />
         </template>
-        <span>Edity</span>
+        <span>Edit</span>
       </IconButton>
       <IconButton v-if="!isMine">
         <template v-slot:icon>
