@@ -29,4 +29,11 @@ defineProps<{ comment: Comment }>()
   padding-inline-start: 1rem;
   border-left: 2px solid var(--clr-primary-300);
 }
+
+@media only screen and (min-width: 540px) {
+  .comments__replies {
+    padding-inline-start: 2rem;
+    margin-inline-start: 2rem;
+  }
+}
 </style>
