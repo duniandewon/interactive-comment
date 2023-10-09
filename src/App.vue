@@ -9,9 +9,9 @@ import CommentWithReplies from './components/CommentWithRepliesComponent.vue'
 
 import useComments from './hooks/useComments'
 
-const { comments } = useComments()
+const { comments, postComments } = useComments()
 
 const handleSubmit = (comment:string) =>{
-  alert(comment)
+  postComments(comment)
 }
 </script>
