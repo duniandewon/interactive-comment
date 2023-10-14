@@ -1,9 +1,9 @@
 <template>
   <div class="comment-card">
     <div class="comment-card__header">
-      <Avatar :username="username" />
+      <Avatar :username="comment.user.username" />
       <div class="comment-card__user">
-        <span>{{ username }}</span>
+        <span>{{ comment.user.username }}</span>
         <span class="comment-card__you" v-if="isMine">you</span>
       </div>
       <div class="comment-card__time">
@@ -11,13 +11,13 @@
       </div>
     </div>
     <p class="comment-card__content">
-      <span class="conmment-card__mention" v-if="replyingTo">@{{ replyingTo }}</span> {{ content }}
+      <span class="conmment-card__mention" v-if="comment.mention">@{{ comment.mention }}</span> {{ comment.content }}
     </p>
     <div class="comment-card__vote">
-      <VoteButton :score="score" />
+      <VoteButton :score="comment.score" />
     </div>
     <div class="comment-card__action">
-      <IconButton class="danger" v-if="isMine">
+      <IconButton class="danger" v-if="isMine" @click="handleClickDelete">
         <template v-slot:icon>
           <IconDelete />
         </template>
@@ -40,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import type { Comment } from '@/interface/comment';
 import Avatar from './AvatarComponent.vue';
 import IconButton from './IconButtonComponent.vue';
 import VoteButton from './VoteComponent.vue';
@@ -47,15 +48,13 @@ import IconDelete from './icons/IconDelete.vue';
 import IconEdit from './icons/IconEdit.vue';
 import IconReply from './icons/IconReply.vue';
 
+const props = defineProps<{comment: Comment, isMine: boolean}>()
 
-defineProps<{
-  score: number
-  username: string
-  content: string
-  replyingTo?: string
-  createdAt: string
-  isMine: boolean
-}>()
+const emits = defineEmits(['onDelete'])
+
+const handleClickDelete = () => {
+  emits("onDelete", props.comment._id)
+}
 </script>
 
 <style scoped>

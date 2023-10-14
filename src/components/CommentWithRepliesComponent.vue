@@ -1,13 +1,9 @@
 <template>
   <div class="comments__container">
-    <CommentCard :content="comment.content" :created-at="comment.createdAt"
-      :is-mine="comment.user.username === 'juliusomo'" :replying-to="comment.replyingTo" :score="comment.score"
-      :username="comment.user.username" />
-
+    <CommentCard :comment="comment" :is-mine="comment.user.username === 'juliusomo'" @on-delete="handleOnDelete" />
     <div v-if="comment.replies?.length" class="comments__replies">
-      <CommentCard v-for="reply in comment.replies" :key="reply._id" :content="reply.content"
-        :created-at="reply.createdAt" :is-mine="reply.user.username === 'juliusomo'" :replying-to="reply.replyingTo"
-        :score="reply.score" :username="reply.user.username" />
+      <CommentCard v-for="reply in comment.replies" :key="reply._id" :comment="reply"
+        :is-mine="reply.user.username === 'juliusomo'" @on-delete="handleOnDelete" />
     </div>
   </div>
 </template>
@@ -16,7 +12,15 @@
 import type { Comment } from '@/interface/comment';
 import CommentCard from './CommentCardComponent.vue';
 
+import useComments from '@/hooks/useComments'
+
 defineProps<{ comment: Comment }>()
+
+const { deleteComment } = useComments()
+
+const handleOnDelete = (id: string) => {
+  deleteComment(id)
+}
 </script>
 
 <style scoped>

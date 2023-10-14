@@ -9,7 +9,7 @@ const BaseComment = z.object({
   updatedAt: z.string().optional(),
   score: z.number(),
   user: User,
-  replyingTo: z.string().optional(),
+  mention: z.string().optional(),
 });
 
 export interface Comment extends z.infer<typeof BaseComment> {

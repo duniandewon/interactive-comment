@@ -21,10 +21,9 @@ interface Response {
 const useComments = () => {
   const state: State = reactive({ comments: [], loading: false, error: '' })
 
-  const user = {
+  const USER = {
     _id: '65154ab60a64cbfdf46d8348',
-    username: 'juliusomo',
-    __v: 0
+    username: 'juliusomo'
   }
 
   const getComments = async () => {
@@ -46,7 +45,7 @@ const useComments = () => {
       const newComment = {
         content: comment,
         score: 0,
-        user: user._id
+        user: USER._id
       }
 
       await axios.post('http://localhost:5000/api/v1/comments', newComment)
@@ -55,9 +54,17 @@ const useComments = () => {
     }
   }
 
-  getComments()
+  const deleteComment = async (id: string) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/v1/comments/${id}`)
+    } catch (err) {
+      if (axios.isAxiosError(err)) state.error = err.message
+    }
+  }
 
-  return { ...toRefs(state), postComments }
+  if (!state.comments.length) getComments()
+
+  return { ...toRefs(state), postComments, deleteComment }
 }
 
 export default useComments
