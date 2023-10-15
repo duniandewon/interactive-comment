@@ -1,21 +1,21 @@
 import * as z from 'zod'
 
-import { User } from './user';
+import { User } from './user'
 
-const BaseComment = z.object({
-  _id: z.string(),
+export const ZComment = z.object({
   content: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string().optional(),
   score: z.number(),
-  user: User,
+  user: z.string(),
   mention: z.string().optional(),
-});
+  parentId: z.string().optional()
+})
 
-export interface Comment extends z.infer<typeof BaseComment> {
-  replies?: z.infer<typeof BaseComment>[];
+export type ZComment = z.infer<typeof ZComment>
+
+export interface Comment extends Omit<ZComment, 'user'> {
+  _id: string
+  createdAt: Date
+  updatedAt: Date
+  replies?: Comment[]
+  user: User
 }
-
-export const Comment = BaseComment.extend({
-  replies: z.array(BaseComment).optional(),
-});

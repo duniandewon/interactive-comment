@@ -11,7 +11,15 @@ import useComments from './hooks/useComments'
 
 const { comments, postComments } = useComments()
 
-const handleSubmit = (comment:string) =>{
-  postComments(comment)
+import type { ZComment } from './interface/comment';
+
+const handleSubmit = (comment: string) => {
+  const newComment: ZComment = {
+    content: comment,
+    score: 0,
+    user: "65154ab60a64cbfdf46d8348"
+  }
+
+  postComments(newComment)
 }
 </script>

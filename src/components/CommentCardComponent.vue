@@ -29,7 +29,7 @@
         </template>
         <span>Edit</span>
       </IconButton>
-      <IconButton v-if="!isMine">
+      <IconButton v-if="!isMine" @click="handleClickReply">
         <template v-slot:icon>
           <IconReply />
         </template>
@@ -37,23 +37,39 @@
       </IconButton>
     </div>
   </div>
+  <CommentBox v-if="isReplying" :value="`@${comment.user.username} `" @on-submit="handleSubmit" />
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import type { Comment } from '@/interface/comment';
+
 import Avatar from './AvatarComponent.vue';
+import CommentBox from './CommentBoxComponent.vue';
+
 import IconButton from './IconButtonComponent.vue';
 import VoteButton from './VoteComponent.vue';
 import IconDelete from './icons/IconDelete.vue';
 import IconEdit from './icons/IconEdit.vue';
 import IconReply from './icons/IconReply.vue';
 
-const props = defineProps<{comment: Comment, isMine: boolean}>()
+const props = defineProps<{ comment: Comment, isMine: boolean, parentId?: string }>()
 
-const emits = defineEmits(['onDelete'])
+const isReplying = ref(false)
+
+const emits = defineEmits(['onDelete', "onReply"])
 
 const handleClickDelete = () => {
   emits("onDelete", props.comment._id)
+}
+
+const handleClickReply = () => {
+  isReplying.value = !isReplying.value
+}
+
+const handleSubmit = (content: string) => {
+  emits('onReply', content, props.parentId)
 }
 </script>
 
@@ -66,6 +82,10 @@ const handleClickDelete = () => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
+}
+
+.comment-card + .comment-card {
+  margin-block-start: 1rem;
 }
 
 .comment-card__header,

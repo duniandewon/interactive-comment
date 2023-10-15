@@ -20,7 +20,9 @@ import Avatar from './AvatarComponent.vue';
 import Button from './ButtonComponent.vue';
 import TextBox from './TextboxComponent.vue'
 
-const comment = ref("")
+const props = defineProps<{ value?: string }>()
+
+const comment = ref(props.value ||"")
 
 const emits = defineEmits(['onSubmit'])
 

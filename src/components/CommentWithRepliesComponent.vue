@@ -1,25 +1,42 @@
 <template>
   <div class="comments__container">
-    <CommentCard :comment="comment" :is-mine="comment.user.username === 'juliusomo'" @on-delete="handleOnDelete" />
+    <CommentCard :comment="comment" :is-mine="comment.user.username === 'juliusomo'" @on-delete="handleOnDelete"
+      @on-reply="handleReply" />
     <div v-if="comment.replies?.length" class="comments__replies">
       <CommentCard v-for="reply in comment.replies" :key="reply._id" :comment="reply"
-        :is-mine="reply.user.username === 'juliusomo'" @on-delete="handleOnDelete" />
+        :is-mine="reply.user.username === 'juliusomo'" :parent-id="comment._id" @on-delete="handleOnDelete" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Comment } from '@/interface/comment';
+import type { Comment, ZComment } from '@/interface/comment';
 import CommentCard from './CommentCardComponent.vue';
 
 import useComments from '@/hooks/useComments'
 
-defineProps<{ comment: Comment }>()
+const props = defineProps<{ comment: Comment }>()
 
-const { deleteComment } = useComments()
+const { deleteComment, postComments } = useComments()
 
 const handleOnDelete = (id: string) => {
   deleteComment(id)
+}
+
+const handleReply = (content: string, parentId: string) => {
+  const index = content.indexOf(" ")
+  const mention = content.slice(1, index)
+  content = content.slice(index + 1)
+
+  const reply: ZComment = {
+    content,
+    parentId: parentId || props.comment._id,
+    mention,
+    score: 0,
+    user: "65154ab60a64cbfdf46d8348",
+  }
+
+  postComments(reply)
 }
 </script>
 
