@@ -4,14 +4,15 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 import CommentBox from './components/CommentBoxComponent.vue';
 import CommentWithReplies from './components/CommentWithRepliesComponent.vue'
 
 import useComments from './hooks/useComments'
 
-const { comments, postComments } = useComments()
-
 import type { ZComment } from './interface/comment';
+
+const { comments, getComments, postComments } = useComments()
 
 const handleSubmit = (comment: string) => {
   const newComment: ZComment = {
@@ -22,4 +23,8 @@ const handleSubmit = (comment: string) => {
 
   postComments(newComment)
 }
+
+onMounted(() => {
+  getComments()
+})
 </script>
