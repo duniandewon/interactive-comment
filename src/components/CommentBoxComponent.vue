@@ -5,7 +5,7 @@
         <Avatar username="juliusomo" />
       </div>
       <div class="comment-box__input">
-        <TextBox :value="comment" @onChange="handleChange" />
+        <TextBox :value="comment" @input="handleChange" placeholder="Add a comment..." />
       </div>
       <div class="comment-box__action">
         <Button class="primary" type="submit">Send</Button>
@@ -22,7 +22,7 @@ import TextBox from './TextboxComponent.vue'
 
 const props = defineProps<{ value?: string }>()
 
-const comment = ref(props.value ||"")
+const comment = ref(props.value || "")
 
 const emits = defineEmits(['onSubmit'])
 

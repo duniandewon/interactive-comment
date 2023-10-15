@@ -1,12 +1,6 @@
 <template>
-  <textarea class="text-box" :value="value" placeholder="Add comment..." @input="emits('onChange', $event)"></textarea>
+  <textarea class="text-box"></textarea>
 </template>
-
-<script setup lang="ts">
-defineProps<{ value: string }>()
-
-const emits = defineEmits(["onChange"])
-</script>
 
 <style scoped>
 .text-box {
