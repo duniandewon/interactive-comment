@@ -37,8 +37,15 @@ const useComments = () => {
   const postComments = async (comment: ZComment) => {
     state.loading = true
     try {
-
       await axios.post('http://localhost:5000/api/v1/comments', comment)
+    } catch (err) {
+      if (axios.isAxiosError(err)) state.error = err.message
+    }
+  }
+
+  const updateComment = async (id: string, comment: ZComment) => {
+    try {
+      await axios.put(`http://localhost:5000/api/v1/comments/${id}`, comment)
     } catch (err) {
       if (axios.isAxiosError(err)) state.error = err.message
     }
@@ -52,9 +59,7 @@ const useComments = () => {
     }
   }
 
- getComments()
-
-  return { ...toRefs(state), postComments, deleteComment }
+  return { ...toRefs(state), getComments, postComments, updateComment, deleteComment }
 }
 
 export default useComments

@@ -1,10 +1,11 @@
 <template>
   <div class="comments__container">
     <CommentCard :comment="comment" :is-mine="comment.user.username === 'juliusomo'" @on-delete="handleOnDelete"
-      @on-reply="handleReply" />
+      @on-reply="handleReply" @on-update="handleOnUpdate" />
     <div v-if="comment.replies?.length" class="comments__replies">
       <CommentCard v-for="reply in comment.replies" :key="reply._id" :comment="reply"
-        :is-mine="reply.user.username === 'juliusomo'" :parent-id="comment._id" @on-delete="handleOnDelete" />
+        :is-mine="reply.user.username === 'juliusomo'" :parent-id="comment._id" @on-delete="handleOnDelete"
+        @on-reply="handleReply" @on-update="handleOnUpdate" />
     </div>
   </div>
 </template>
@@ -17,7 +18,22 @@ import useComments from '@/hooks/useComments'
 
 const props = defineProps<{ comment: Comment }>()
 
-const { deleteComment, postComments } = useComments()
+const { deleteComment, updateComment, postComments } = useComments()
+
+const handleOnUpdate = (id: string, content: string) => {
+  const index = content.indexOf(" ")
+  const mention = content.slice(1, index)
+  content = content.slice(index + 1)
+
+  const comment: ZComment = {
+    content,
+    mention,
+    score: props.comment.score,
+    user: "65154ab60a64cbfdf46d8348",
+  }
+
+  updateComment(id, comment)
+}
 
 const handleOnDelete = (id: string) => {
   deleteComment(id)

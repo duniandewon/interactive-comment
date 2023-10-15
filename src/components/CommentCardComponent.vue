@@ -10,20 +10,25 @@
         2 days ago
       </div>
     </div>
-    <p class="comment-card__content">
+    <p v-if="!isEditing" class="comment-card__content">
       <span class="conmment-card__mention" v-if="comment.mention">@{{ comment.mention }}</span> {{ comment.content }}
     </p>
+    <div v-if="isEditing" class="comment-card__content">
+      <Textbox :value="updatedComment" @input="handleChange" />
+    </div>
     <div class="comment-card__vote">
       <VoteButton :score="comment.score" />
     </div>
     <div class="comment-card__action">
-      <IconButton class="danger" v-if="isMine" @click="handleClickDelete">
+      <Button v-if="isEditing" class="small primary" @click="handleUpdateComment">Update</Button>
+      <Button v-if="isEditing" class="small" @click="handleClickEdit">Cancel</Button>
+      <IconButton v-if="isMine && !isEditing" class="danger" @click="handleClickDelete">
         <template v-slot:icon>
           <IconDelete />
         </template>
         <span>Delete</span>
       </IconButton>
-      <IconButton v-if="isMine">
+      <IconButton v-if="isMine && !isEditing" @click="handleClickEdit">
         <template v-slot:icon>
           <IconEdit />
         </template>
@@ -47,6 +52,8 @@ import type { Comment } from '@/interface/comment';
 
 import Avatar from './AvatarComponent.vue';
 import CommentBox from './CommentBoxComponent.vue';
+import Textbox from './TextboxComponent.vue'
+import Button from './ButtonComponent.vue';
 
 import IconButton from './IconButtonComponent.vue';
 import VoteButton from './VoteComponent.vue';
@@ -57,8 +64,17 @@ import IconReply from './icons/IconReply.vue';
 const props = defineProps<{ comment: Comment, isMine: boolean, parentId?: string }>()
 
 const isReplying = ref(false)
+const isEditing = ref(false)
 
-const emits = defineEmits(['onDelete', "onReply"])
+const updatedComment = ref(`@${props.comment.mention} ${props.comment.content}`)
+
+const emits = defineEmits(['onDelete', "onReply", "onUpdate"])
+
+const handleChange = (e: Event) => {
+  const { value } = e.target as HTMLInputElement
+
+  updatedComment.value = value
+}
 
 const handleClickDelete = () => {
   emits("onDelete", props.comment._id)
@@ -68,8 +84,18 @@ const handleClickReply = () => {
   isReplying.value = !isReplying.value
 }
 
+const handleClickEdit = () => {
+  isEditing.value = !isEditing.value
+}
+
+const handleUpdateComment = () => {
+  emits("onUpdate", props.comment._id, updatedComment.value)
+  isEditing.value = false
+}
+
 const handleSubmit = (content: string) => {
   emits('onReply', content, props.parentId)
+  isReplying.value = false
 }
 </script>
 
@@ -84,7 +110,7 @@ const handleSubmit = (content: string) => {
   gap: 1rem;
 }
 
-.comment-card + .comment-card {
+.comment-card+.comment-card {
   margin-block-start: 1rem;
 }
 
@@ -125,6 +151,7 @@ const handleSubmit = (content: string) => {
 
 .comment-card__action {
   justify-self: end;
+  gap: 0.5rem;
 }
 
 @media only screen and (min-width: 540px) {
