@@ -14,6 +14,10 @@
   border-radius: 0.5rem;
 }
 
+.button.small {
+  padding: 0.75rem 0.938rem;
+}
+
 .button:hover {
   background-color: var(--clr-primary-300);
 }
