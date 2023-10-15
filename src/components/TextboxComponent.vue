@@ -1,6 +1,16 @@
 <template>
-  <textarea class="text-box"></textarea>
+  <textarea class="text-box" ref="textboxRef"></textarea>
 </template>
+
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+
+const textboxRef = ref<HTMLTextAreaElement>()
+
+onMounted(() => {
+  textboxRef.value?.focus()
+})
+</script>
 
 <style scoped>
 .text-box {
