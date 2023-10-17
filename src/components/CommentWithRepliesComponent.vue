@@ -11,14 +11,17 @@
 </template>
 
 <script setup lang="ts">
-import type { Comment, ZComment } from '@/interface/comment';
 import CommentCard from './CommentCardComponent.vue';
 
-import useComments from '@/hooks/useComments'
+import type { Comment, ZComment } from '@/interface/comment';
+
+import { useCommentsStore } from '@/store/commentsStore';
 
 const props = defineProps<{ comment: Comment }>()
 
-const { deleteComment, updateComment, postComments } = useComments()
+const store = useCommentsStore()
+
+const { postComments, updateComment, deleteComment } = store
 
 const handleOnUpdate = (id: string, content: string) => {
   const index = content.indexOf(" ")
@@ -73,4 +76,4 @@ const handleReply = (content: string, parentId: string) => {
     margin-inline-start: 2rem;
   }
 }
-</style>
+</style>@/api/useComments

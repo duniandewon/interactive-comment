@@ -4,15 +4,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia'
+
 import CommentBox from './components/CommentBoxComponent.vue';
 import CommentWithReplies from './components/CommentWithRepliesComponent.vue'
 
-import useComments from './hooks/useComments'
+import { useCommentsStore } from './store/commentsStore'
 
 import type { ZComment } from './interface/comment';
 
-const { comments, getComments, postComments } = useComments()
+const store = useCommentsStore()
+
+const { comments } = storeToRefs(store)
+
+store.getComments()
 
 const handleSubmit = (comment: string) => {
   const newComment: ZComment = {
@@ -20,11 +25,6 @@ const handleSubmit = (comment: string) => {
     score: 0,
     user: "65154ab60a64cbfdf46d8348"
   }
-
-  postComments(newComment)
+  store.postComments(newComment)
 }
-
-onMounted(() => {
-  getComments()
-})
-</script>
+</script>./api/useComments
