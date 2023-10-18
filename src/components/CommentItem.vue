@@ -59,7 +59,7 @@ import IconReply from './icons/IconReply.vue';
 
 import type { Comment } from '@/interface/comment';
 
-const props = defineProps<{ comment: Comment, isMine: boolean, parentId?: string }>()
+const props = defineProps<{ comment: Comment, isMine: boolean }>()
 
 const isEditing = ref(false)
 
@@ -78,7 +78,7 @@ const handleClickDelete = () => {
 }
 
 const handleClickReply = () => {
-  console.log(props.comment)
+  emits("onReply", props.comment)
 }
 
 const handleClickEdit = () => {

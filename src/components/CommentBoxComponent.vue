@@ -5,7 +5,7 @@
         <Avatar username="juliusomo" />
       </div>
       <div class="comment-box__input">
-        <TextBox :value="comment" @input="handleChange" placeholder="Add a comment..." />
+        <TextBox :value="commentContent" @input="handleChange" placeholder="Add a comment..." />
       </div>
       <div class="comment-box__action">
         <Button class="primary" type="submit">Send</Button>
@@ -15,26 +15,55 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
+import { storeToRefs } from 'pinia';
+
 import Avatar from './AvatarComponent.vue';
 import Button from './ButtonComponent.vue';
 import TextBox from './TextboxComponent.vue'
 
-const props = defineProps<{ value?: string }>()
+import { useCommentStore } from '@/store/commentStore';
+import useCommentsQuery from '@/composables/useCommentsQuery';
 
-const comment = ref(props.value || "")
+import type { ZComment } from '@/interface/comment';
 
-const emits = defineEmits(['onSubmit'])
+const commentContent = ref("")
+
+const store = useCommentStore()
+
+const { setActiveComment } = store
+
+const { activeComment } = storeToRefs(store)
+
+const { postComment } = useCommentsQuery()
 
 const handleChange = (e: Event) => {
   const { value } = e.target as HTMLInputElement
 
-  comment.value = value
+  commentContent.value = value
 }
 
+watchEffect(() => {
+  if (activeComment.value) {
+    commentContent.value = `@${activeComment.value.user.username} `
+  }
+})
+
 const handleSubmit = () => {
-  emits('onSubmit', comment.value)
-  comment.value = ""
+  const content = activeComment.value ? commentContent.value.slice(activeComment.value.user.username.length + 2) : commentContent.value
+  const mention = activeComment.value?.user.username
+  const parentId = activeComment.value?.parentId || activeComment.value?._id
+
+  const newComment: ZComment = {
+    content, parentId, mention,
+    score: 0,
+    user: "65154ab60a64cbfdf46d8348"
+  }
+
+  postComment(newComment)
+
+  commentContent.value = ""
+  setActiveComment(null)
 }
 </script>
 
