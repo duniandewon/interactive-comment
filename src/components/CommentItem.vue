@@ -42,18 +42,14 @@
       </IconButton>
     </div>
   </div>
-  <CommentBox v-if="isReplying" :value="`@${comment.user.username} `" @on-submit="handleSubmit" />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import type { Comment } from '@/interface/comment';
-
 import Avatar from './AvatarComponent.vue';
-import CommentBox from './CommentBoxComponent.vue';
-import Textbox from './TextboxComponent.vue'
 import Button from './ButtonComponent.vue';
+import Textbox from './TextboxComponent.vue'
 
 import IconButton from './IconButtonComponent.vue';
 import VoteButton from './VoteComponent.vue';
@@ -61,9 +57,10 @@ import IconDelete from './icons/IconDelete.vue';
 import IconEdit from './icons/IconEdit.vue';
 import IconReply from './icons/IconReply.vue';
 
+import type { Comment } from '@/interface/comment';
+
 const props = defineProps<{ comment: Comment, isMine: boolean, parentId?: string }>()
 
-const isReplying = ref(false)
 const isEditing = ref(false)
 
 const updatedComment = ref(`@${props.comment.mention} ${props.comment.content}`)
@@ -81,7 +78,7 @@ const handleClickDelete = () => {
 }
 
 const handleClickReply = () => {
-  isReplying.value = !isReplying.value
+  console.log(props.comment)
 }
 
 const handleClickEdit = () => {
@@ -91,11 +88,6 @@ const handleClickEdit = () => {
 const handleUpdateComment = () => {
   emits("onUpdate", props.comment._id, updatedComment.value)
   isEditing.value = false
-}
-
-const handleSubmit = (content: string) => {
-  emits('onReply', content, props.parentId)
-  isReplying.value = false
 }
 </script>
 

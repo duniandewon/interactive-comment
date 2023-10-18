@@ -1,18 +1,21 @@
 <template>
-  <CommentWithReplies v-for="comment in comments" :key="comment._id" :comment="comment" />
-  <CommentBox @on-submit="handleSubmit" />
+  <main class="main">
+    <CommentsList />
+  </main>
+  <footer class="footer">
+    <CommentBox @on-submit="handleSubmit" />
+  </footer>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import CommentBox from './components/CommentBoxComponent.vue';
-import CommentWithReplies from './components/CommentWithRepliesComponent.vue'
+import useCommentsQuery from '@/composables/useCommentsQuery'
 
-import useComments from './hooks/useComments'
+import CommentsList from './components/CommentsList.vue';
+import CommentBox from './components/CommentBoxComponent.vue';
 
 import type { ZComment } from './interface/comment';
 
-const { comments, getComments, postComments } = useComments()
+const { comments, postComment } = useCommentsQuery()
 
 const handleSubmit = (comment: string) => {
   const newComment: ZComment = {
@@ -21,10 +24,16 @@ const handleSubmit = (comment: string) => {
     user: "65154ab60a64cbfdf46d8348"
   }
 
-  postComments(newComment)
+  postComment(newComment)
+}
+</script>
+
+<style scoped>
+.main {
+  overflow-y: auto;
 }
 
-onMounted(() => {
-  getComments()
-})
-</script>
+.main, .footer {
+  padding-inline: 1.2rem;
+}
+</style>
