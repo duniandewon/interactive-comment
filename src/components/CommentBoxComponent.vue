@@ -31,7 +31,6 @@ const commentContent = ref("")
 
 const store = useCommentStore()
 
-const { setActiveComment } = store
 
 const { activeComment } = storeToRefs(store)
 
@@ -63,7 +62,7 @@ const handleSubmit = () => {
   postComment(newComment)
 
   commentContent.value = ""
-  setActiveComment(null)
+  store.$patch({activeComment: null})
 }
 </script>
 

@@ -1,9 +1,10 @@
 <template>
   <div class="comments__container" v-for="comment in comments" :key="comment._id">
-    <CommentItem :comment="comment" :is-mine="comment.user.username === 'juliusomo'" @on-reply="handleCLickReply" />
+    <CommentItem :comment="comment" :is-mine="comment.user.username === 'juliusomo'" @on-reply="handleCLickReply"
+      @on-delete="handleClickDelete" />
     <div v-if="comment.replies?.length" class="comments__replies">
       <CommentItem v-for="reply in comment.replies" :key="reply._id" :comment="reply"
-        :is-mine="reply.user.username === 'juliusomo'" @on-reply="handleCLickReply" />
+        :is-mine="reply.user.username === 'juliusomo'" @on-reply="handleCLickReply" @on-delete="handleClickDelete" />
     </div>
   </div>
 </template>
@@ -18,12 +19,14 @@ import type { Comment } from '@/interface/comment';
 
 const store = useCommentStore()
 
-const { setActiveComment } = store
-
-const { comments } = useCommentsQuery()
+const { comments, deleteComment } = useCommentsQuery()
 
 const handleCLickReply = (comment: Comment) => {
-  setActiveComment(comment)
+  store.$patch({activeComment: comment})
+}
+
+const handleClickDelete = (comment: Comment) => {
+  deleteComment(comment)
 }
 </script>
 
