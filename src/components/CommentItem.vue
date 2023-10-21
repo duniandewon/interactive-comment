@@ -74,7 +74,7 @@ const handleChange = (e: Event) => {
 }
 
 const handleClickDelete = () => {
-  emits("onDelete", props.comment._id)
+  emits("onDelete", props.comment)
 }
 
 const handleClickReply = () => {
