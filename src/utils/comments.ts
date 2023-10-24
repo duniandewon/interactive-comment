@@ -30,6 +30,32 @@ export const createNewCommentsList = (old: Comment[], comment: ZComment) => {
   return newCommentList
 }
 
+export const updateComment = (oldComment: Comment[], comment: Comment) => {
+  if (comment.parentId) {
+    return oldComment.map((comm) => {
+      if (comm._id === comment.parentId) {
+        comm.replies = comm.replies?.map((reply) => {
+          if (reply._id === comment._id) {
+            reply = comment
+          }
+
+          return reply
+        })
+      }
+
+      return comm
+    })
+  }
+
+  return oldComment.map((comm) => {
+    if (comm._id === comment._id) {
+      comm = comment
+    }
+
+    return comm
+  })
+}
+
 export const updateCommentsList = (oldComments: Comment[], comment: Comment) => {
   if (!comment.parentId) {
     return oldComments.filter((comm) => comm._id !== comment._id)

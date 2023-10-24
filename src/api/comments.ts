@@ -20,4 +20,8 @@ export const getCommentsApi = async (): Promise<Comment[]> => {
 
 export const postCommentsApi = (comment: ZComment) => axiosClient.post('/comments', comment)
 
-export const deleteCommentsApi = (comment: Comment) => axiosClient.delete(`/comments/${comment._id}`)
+export const updateCommentApi = ({ content, _id, score, user }: Comment) =>
+  axiosClient.put(`/comments/${_id}`, { content, score, user: user._id })
+
+export const deleteCommentsApi = (comment: Comment) =>
+  axiosClient.delete(`/comments/${comment._id}`)

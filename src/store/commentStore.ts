@@ -4,10 +4,7 @@ import { ref } from 'vue'
 
 export const useCommentStore = defineStore('comment-store', () => {
   const activeComment = ref<Comment | null>(null)
+  const isEditting = ref(false)
 
-  const setActiveComment = (comment: Comment | null) => {
-    activeComment.value = comment
-  }
-
-  return { activeComment, setActiveComment }
+  return { activeComment, isEditting }
 })

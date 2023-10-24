@@ -13,8 +13,8 @@
     <p v-if="!isEditing" class="comment-card__content">
       <span class="conmment-card__mention" v-if="comment.mention">@{{ comment.mention }}</span> {{ comment.content }}
     </p>
-    <div v-if="isEditing" class="comment-card__content">
-      <Textbox :value="updatedComment" @input="handleChange" />
+    <div v-if="isEditing && isMine" class="comment-card__content">
+      <textarea class="text-box" v-model="updatedComment" ref="textBoxRef"></textarea>
     </div>
     <div class="comment-card__vote">
       <VoteButton :score="comment.score" />
@@ -45,11 +45,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
 
 import Avatar from './AvatarComponent.vue';
 import Button from './ButtonComponent.vue';
-import Textbox from './TextboxComponent.vue'
 
 import IconButton from './IconButtonComponent.vue';
 import VoteButton from './VoteComponent.vue';
@@ -59,36 +58,33 @@ import IconReply from './icons/IconReply.vue';
 
 import type { Comment } from '@/interface/comment';
 
-const props = defineProps<{ comment: Comment, isMine: boolean }>()
+const props = defineProps<{ comment: Comment, isMine: boolean, isEditing: boolean }>()
 
-const isEditing = ref(false)
+const updatedComment = ref(props.comment.content)
 
-const updatedComment = ref(`@${props.comment.mention} ${props.comment.content}`)
+const textBoxRef = ref<HTMLTextAreaElement | null>(null)
 
-const emits = defineEmits(['onDelete', "onReply", "onUpdate"])
-
-const handleChange = (e: Event) => {
-  const { value } = e.target as HTMLInputElement
-
-  updatedComment.value = value
-}
+const emits = defineEmits(['onClickDelete', "onClickReply", "onClickEdit", "onUpdateComment"])
 
 const handleClickDelete = () => {
-  emits("onDelete", props.comment)
+  emits("onClickDelete", props.comment)
 }
 
 const handleClickReply = () => {
-  emits("onReply", props.comment)
+  emits("onClickReply", props.comment)
 }
 
 const handleClickEdit = () => {
-  isEditing.value = !isEditing.value
+  emits("onClickEdit", props.comment)
 }
 
 const handleUpdateComment = () => {
-  emits("onUpdate", props.comment._id, updatedComment.value)
-  isEditing.value = false
+  emits("onUpdateComment", updatedComment.value)
 }
+
+watchEffect(() => {
+  if (props.isEditing) textBoxRef.value?.focus()
+})
 </script>
 
 <style scoped>

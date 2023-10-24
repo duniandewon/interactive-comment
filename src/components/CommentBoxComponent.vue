@@ -5,7 +5,7 @@
         <Avatar username="juliusomo" />
       </div>
       <div class="comment-box__input">
-        <TextBox :value="commentContent" @input="handleChange" placeholder="Add a comment..." />
+        <textarea class="text-box" v-model="commentContent" ref="textBoxRef" placeholder="Add a comment..."></textarea>
       </div>
       <div class="comment-box__action">
         <Button class="primary" type="submit">Send</Button>
@@ -15,12 +15,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, } from 'vue';
 import { storeToRefs } from 'pinia';
 
 import Avatar from './AvatarComponent.vue';
 import Button from './ButtonComponent.vue';
-import TextBox from './TextboxComponent.vue'
 
 import { useCommentStore } from '@/store/commentStore';
 import useCommentsQuery from '@/composables/useCommentsQuery';
@@ -31,22 +30,11 @@ const commentContent = ref("")
 
 const store = useCommentStore()
 
+const textBoxRef = ref<HTMLTextAreaElement | null>(null)
 
-const { activeComment } = storeToRefs(store)
+const { activeComment, isEditting } = storeToRefs(store)
 
 const { postComment } = useCommentsQuery()
-
-const handleChange = (e: Event) => {
-  const { value } = e.target as HTMLInputElement
-
-  commentContent.value = value
-}
-
-watchEffect(() => {
-  if (activeComment.value) {
-    commentContent.value = `@${activeComment.value.user.username} `
-  }
-})
 
 const handleSubmit = () => {
   const content = activeComment.value ? commentContent.value.slice(activeComment.value.user.username.length + 2) : commentContent.value
@@ -62,8 +50,17 @@ const handleSubmit = () => {
   postComment(newComment)
 
   commentContent.value = ""
-  store.$patch({activeComment: null})
+  store.$patch({ activeComment: null })
 }
+
+watchEffect(() => {
+  if (activeComment.value && !isEditting.value) {
+    commentContent.value = `@${activeComment.value.user.username} `
+    textBoxRef.value?.focus()
+  } else {
+    commentContent.value = ""
+  }
+})
 </script>
 
 <style>
